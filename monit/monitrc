@@ -1,0 +1,12 @@
+check host www.brendanlong.com with address www.brendanlong.com
+    if failed
+        port 443
+        protocol https
+        status = 200
+        content = "Brendan Long"
+    then alert
+    if failed
+        port 80
+        protocol http
+        status = 301
+    then alert

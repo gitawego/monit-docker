@@ -1,0 +1,15 @@
+version: '2.3'
+
+services:
+  monit:
+    container_name: monit
+    image: monit:latest
+    build: ./monit-docker
+    environment:
+      MONIT_ALLOW: "0.0.0.0/0.0.0.0"
+    volumes:
+      - ./monit:/opt/monit/etc/conf.d
+    ports:
+      - "2812:2812"
+    restart: always
+
