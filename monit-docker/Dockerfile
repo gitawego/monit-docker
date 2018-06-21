@@ -11,6 +11,8 @@ ENV MONIT_VERSION=5.25.2 \
 ENV MONIT_NAME=monit-${MONIT_VERSION}
 ENV MONIT_FILENAME=${MONIT_NAME}-linux-x64.tar.gz
 
+RUN useradd -m -l monit
+
 # Compile and install monit
 RUN curl -k -o ${MONIT_FILENAME} ${MONIT_URL}/binary/${MONIT_VERSION}/${MONIT_FILENAME} \
 	&& tar xf ${MONIT_FILENAME} \
@@ -19,5 +21,9 @@ RUN curl -k -o ${MONIT_FILENAME} ${MONIT_URL}/binary/${MONIT_VERSION}/${MONIT_FI
 	&& mkdir -p ${MONIT_HOME}/log/
 
 COPY ./start.sh ${MONIT_HOME}/bin/
-RUN chmod +x ${MONIT_HOME}/bin/start.sh
+RUN chmod +x ${MONIT_HOME}/bin/start.sh \
+	&& chown -R monit:monit ${MONIT_HOME}
+
+USER monit
+
 ENTRYPOINT ["/bin/bash","-c","${MONIT_HOME}/bin/start.sh"]

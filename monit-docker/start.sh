@@ -6,19 +6,19 @@ if [ -d "${SERVICE_VOLUME}" ]; then
 		sleep 5
 	done
 
-	cat << EOF > /etc/monitrc
+	cat << EOF > ${MONIT_HOME}/monitrc
 include ${SERVICE_VOLUME}/monit/conf.d/*
 include ${MONIT_HOME}/etc/conf.d/*
 EOF
 
 else
-	cat << EOF > /etc/monitrc
+	cat << EOF > ${MONIT_HOME}/monitrc
 include ${MONIT_HOME}/etc/conf.d/*
 EOF
 
 fi
 
-chmod 700 /etc/monitrc
+chmod 700 ${MONIT_HOME}/monitrc
 
 MONIT_PORT=${MONIT_PORT:-"2812"}
 MONIT_ALLOW=${MONIT_ALLOW:-"localhost"}
@@ -46,6 +46,6 @@ do
 done
 
 trap 'echo "Stopping monit with pid [$PID]"; kill -SIGTERM $PID; wait $PID' SIGTERM SIGINT
-${MONIT_HOME}/bin/monit ${MONIT_ARGS} &
+${MONIT_HOME}/bin/monit -c ${MONIT_HOME}/monitrc ${MONIT_ARGS} &
 PID=$!
 wait $PID
